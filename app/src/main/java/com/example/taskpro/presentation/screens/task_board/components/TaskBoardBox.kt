@@ -1,21 +1,14 @@
-package com.example.taskpro.presentation.component
+package com.example.taskpro.presentation.screens.task_board.components
 
 import android.content.ClipDescription
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,41 +28,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskpro.domain.Model.TaskDataModel
-import com.example.taskpro.domain.Model.TaskStatus
-
-/*fun TaskBoardBox(
-    dragBoxIndex: Int,
-    index: Int,
-    taskLists: List<TaskDataModel>,
-    boxStatus: TaskStatus,
-    modifier: Modifier
-){
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            taskLists.forEach { task ->
-
-                this@Column.AnimatedVisibility(
-                    visible = index == dragBoxIndex,
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
-                ) {
-                    TaskBoardCard(task = task, dragBoxIndex = dragBoxIndex)
-                }
-
-            }
-
-        }
-    }
-}*/
+import com.example.taskpro.domain.model.TaskDataModel
+import com.example.taskpro.domain.model.TaskStatus
 
 
 @OptIn(ExperimentalFoundationApi::class)

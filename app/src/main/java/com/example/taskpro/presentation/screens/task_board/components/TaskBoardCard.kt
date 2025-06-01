@@ -1,4 +1,4 @@
-package com.example.taskpro.presentation.component
+package com.example.taskpro.presentation.screens.task_board.components
 
 import android.content.ClipData
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,47 +18,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskpro.domain.Model.TaskDataModel
-import com.example.taskpro.domain.Model.TaskStatus
-
-/*@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun TaskBoardCard(task: TaskDataModel, dragBoxIndex: Int){
-    AnimatedVisibility(
-        visible = true
-    ){
-        Card(
-            modifier = Modifier
-                .dragAndDropSource {
-                    startTransfer(
-                        transferData = DragAndDropTransferData(
-                            clipData = ClipData.newPlainText(
-                                "text",
-                                "Drag me!"
-                            )
-                        )
-                    )
-                }
-                .fillMaxWidth()
-                .height(80.dp),
-            elevation = CardDefaults.cardElevation(4.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = task.task ?: "No task",
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-            }
-        }
-    }
-
-}*/
+import com.example.taskpro.domain.model.TaskDataModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -88,19 +48,5 @@ fun TaskBoardCard(task: TaskDataModel) {
                 color = Color.Black
             )
         }
-    }
-}
-
-private fun isVisible(task: TaskDataModel, boxIndex: Int): Boolean{
-    return task.status == boxStatus(boxIndex)
-}
-
-private fun boxStatus(boxIndex: Int): TaskStatus {
-    return when(boxIndex){
-        0 -> TaskStatus.Started
-        1 -> TaskStatus.Ongoing
-        2 -> TaskStatus.Completed
-        else -> {
-            TaskStatus.Started}
     }
 }

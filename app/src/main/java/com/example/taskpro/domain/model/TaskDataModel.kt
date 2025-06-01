@@ -1,4 +1,4 @@
-package com.example.taskpro.domain.Model
+package com.example.taskpro.domain.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ class TaskDataModel(
 }
 
 enum class TaskStatus(var status: String){
-    Started("started"),
-    Ongoing("ongoing"),
+    Pending("pending"),
+    InProgress("inProgress"),
     Completed("completed")
 }
