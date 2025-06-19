@@ -60,4 +60,11 @@ dependencies {
     //Splash screen
     implementation "androidx.core:core-splashscreen:1.0.1"
 
+    //material 3
+    implementation "androidx.compose.material3:material3:1.2.1" // or latest
+
+    //constraint layout
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+
 }
