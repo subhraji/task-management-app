@@ -40,8 +40,8 @@ import com.example.taskpro.ui.theme.white
 
 @Composable
 fun ProjectListItemCard(
+    project: ProjectModel,
     onProjectClick: (String) -> Unit,
-    project: ProjectModel
 ){
     val priorityColor = when (project.priority) {
         1 -> Color(0xFF4CAF50) // Green
