@@ -20,23 +20,38 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.taskpro.domain.model.ProjectModel
+import com.example.taskpro.ui.theme.amber
 import com.example.taskpro.ui.theme.darkGrayBackground
 import com.example.taskpro.ui.theme.darkText
 import com.example.taskpro.ui.theme.darkestGrayBackground
+import com.example.taskpro.ui.theme.green
 import com.example.taskpro.ui.theme.lightText
 import com.example.taskpro.ui.theme.lightestGrayBackground
+import com.example.taskpro.ui.theme.lightestGrayText
+import com.example.taskpro.ui.theme.orange
+import com.example.taskpro.ui.theme.pink
+import com.example.taskpro.ui.theme.red
 import com.example.taskpro.ui.theme.white
+import com.example.taskpro.utils.isDark
 
 @Composable
 fun ProjectListItemCard(
@@ -44,16 +59,17 @@ fun ProjectListItemCard(
     onProjectClick: (String) -> Unit,
 ){
     val priorityColor = when (project.priority) {
-        1 -> Color(0xFF4CAF50) // Green
-        2 -> Color(0xFF8BC34A)
-        3 -> Color(0xFFFFC107) // Amber
-        4 -> Color(0xFFFF9800)
-        else -> Color(0xFFF44336) // Red
+        1 -> red
+        2 -> pink
+        3 -> orange
+        4 -> amber
+        else -> green
     }
 
-    val isDark = isSystemInDarkTheme()
-    val cardBackgroundColor = if (isDark) darkestGrayBackground else white
-    val createdTimeTextColor = if (isDark) lightestGrayBackground else darkText
+    var menuExpanded by remember { mutableStateOf(false) }
+
+    val cardBackgroundColor = if (isDark()) darkestGrayBackground else white
+    val createdTimeTextColor = if (isDark()) lightestGrayText else darkText
 
     Card(
         modifier = Modifier
@@ -92,12 +108,34 @@ fun ProjectListItemCard(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Options",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Box(
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Options",
+                            tint = Color.Gray,
+                            modifier = Modifier
+                                .clickable {
+                                    menuExpanded = true
+                                }
+                        )
+
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                            //offset = DpOffset(x = (-8).dp, y = 0.dp)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Edit Project") },
+                                onClick = {
+                                    menuExpanded = false
+                                    //onEditProject(project)
+                                }
+                            )
+                        }
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

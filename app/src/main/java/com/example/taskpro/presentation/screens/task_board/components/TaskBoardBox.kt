@@ -36,6 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskpro.domain.model.TaskDataModel
 import com.example.taskpro.domain.model.TaskStatus
+import com.example.taskpro.ui.theme.darkGrayBackground
+import com.example.taskpro.ui.theme.darkText
+import com.example.taskpro.ui.theme.lightText
+import com.example.taskpro.ui.theme.lightestGrayText
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -107,7 +111,7 @@ fun TaskBoardBox(
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = "Back",
-                                tint = Color.White,
+                                tint = lightText,
                             )
                         }
                     }
@@ -115,7 +119,7 @@ fun TaskBoardBox(
                         text = boxStatus.name,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = lightText
                     )
                 }
             }

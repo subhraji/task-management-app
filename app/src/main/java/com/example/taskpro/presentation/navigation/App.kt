@@ -76,7 +76,8 @@ fun MyApp() {
                     TaskBoardScreen (
                         modifier = Modifier,
                         projectId = projectId,
-                        onBackClick = { navController.popBackStack() }
+                        onBackClick = { navController.popBackStack() },
+                        onFabClick = {}
                     )
                 }
             }

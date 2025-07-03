@@ -34,13 +34,11 @@ fun HomeScreen(onProjectClick: (String) -> Unit){
         LazyColumn(contentPadding = padding) {
             items(projectList.size) { index ->
                 val project = projectList[index]
-                //ProjectListItemCard(onProjectClick = onProjectClick, project = project)
 
                 ProjectSwipeItem(
                     project = project,
                     onProjectClick = onProjectClick,
                     onDelete = { projectToDelete ->
-                        // Call your delete logic here
                         //viewModel.deleteProject(projectToDelete)
                         projectList.remove(projectToDelete)
                     }

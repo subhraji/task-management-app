@@ -2,6 +2,7 @@ package com.example.taskpro.presentation.screens.task_board.components
 
 import android.content.ClipData
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,19 +17,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskpro.domain.model.TaskDataModel
+import com.example.taskpro.domain.model.TaskStatus
+import com.example.taskpro.ui.theme.darkestGrayBackground
+import com.example.taskpro.ui.theme.lightText
+import com.example.taskpro.ui.theme.white
+import com.example.taskpro.utils.isDark
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskBoardCard(task: TaskDataModel) {
+
     Card(
         modifier = Modifier
             .dragAndDropSource {
                 startTransfer(
                     transferData = DragAndDropTransferData(
-                        clipData = ClipData.newPlainText("task_id", task.id ?: "")
+                        clipData = ClipData.newPlainText("task_id", task.id)
                     )
                 )
             }
@@ -39,14 +47,28 @@ fun TaskBoardCard(task: TaskDataModel) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .background(white),
             contentAlignment = Alignment.CenterStart
         ) {
             Text(
                 text = task.task ?: "No task",
                 fontSize = 18.sp,
-                color = Color.Black
+                color = lightText,
+                modifier = Modifier
+                    .padding(16.dp)
             )
         }
     }
+}
+
+@Composable
+@Preview(showBackground = false)
+fun TaskBoardCardPreview(){
+    TaskBoardCard(
+        TaskDataModel(
+            "123",
+            "task",
+            TaskStatus.Pending
+        )
+    )
 }

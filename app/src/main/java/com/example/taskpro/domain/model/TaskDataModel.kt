@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 
 class TaskDataModel(
     val id: String,
-    val task: String,
+    val task: String?,
     status: TaskStatus
 ) {
     var status by mutableStateOf(status)

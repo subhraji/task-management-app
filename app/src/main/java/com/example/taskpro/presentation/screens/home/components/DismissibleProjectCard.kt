@@ -53,11 +53,6 @@ fun ProjectSwipeItem(
     var showDialog by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf(false) }
 
-    /*LaunchedEffect(showDialog) {
-        if (!showDialog) {
-            swipeOffsetX.animateTo(0f)
-        }
-    }*/
     LaunchedEffect(showDialog, pendingDelete) {
         if (!showDialog && pendingDelete) {
             swipeOffsetX.animateTo(-fullWidth)

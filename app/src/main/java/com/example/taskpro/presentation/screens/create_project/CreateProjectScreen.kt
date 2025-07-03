@@ -40,6 +40,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.taskpro.domain.model.local.ProjectPriorityModel
+import com.example.taskpro.ui.theme.amber
+import com.example.taskpro.ui.theme.darkGrayBackground
+import com.example.taskpro.ui.theme.green
+import com.example.taskpro.ui.theme.lightGrayBackground
+import com.example.taskpro.ui.theme.lightestGrayBackground
+import com.example.taskpro.ui.theme.orange
+import com.example.taskpro.ui.theme.pink
+import com.example.taskpro.ui.theme.red
+import com.example.taskpro.ui.theme.white
+import com.example.taskpro.utils.isDark
 import java.util.Calendar
 
 
@@ -55,14 +66,21 @@ fun CreateProjectScreen(
     var description by remember { mutableStateOf("") }
     var dueDate by remember { mutableStateOf("") }
 
-    val colorOptions = listOf(Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Magenta)
-    var selectedColor by remember { mutableStateOf(colorOptions.first()) }
+    val priorityOptions = listOf(
+        ProjectPriorityModel(green, 1),
+        ProjectPriorityModel(amber, 2),
+        ProjectPriorityModel(orange, 3),
+        ProjectPriorityModel(pink, 4),
+        ProjectPriorityModel(red, 5)
+    )
+    var selectedPriority by remember { mutableStateOf(priorityOptions.first()) }
+    val selectedBorderColor = if (isDark()) white else darkGrayBackground
 
     var showDatePicker = remember { mutableStateOf(false) }
 
     if(showDatePicker.value){
         val calendar = Calendar.getInstance()
-        DatePickerDialog(
+        val datePicker = DatePickerDialog(
             context,
             { _: DatePicker, year: Int, month: Int, day: Int ->
                 dueDate = "$day/${month + 1}/$year"
@@ -71,7 +89,9 @@ fun CreateProjectScreen(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+        datePicker.datePicker.minDate = System.currentTimeMillis()
+        datePicker.show()
     }
 
     Scaffold(
@@ -135,21 +155,21 @@ fun CreateProjectScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                items(colorOptions.size) { index ->
-                    val color = colorOptions[index]
+                items(priorityOptions.size) { index ->
+                    val priority = priorityOptions[index]
                     Box(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = color,
+                                color = priority.color,
                                 shape = CircleShape
                             )
                             .border(
-                                width = if (color == selectedColor) 3.dp else 0.dp,
-                                color = if (color == selectedColor) Color.Gray else Color.Transparent,
+                                width = if (priority.color == selectedPriority.color) 3.dp else 0.dp,
+                                color = if (priority.color == selectedPriority.color) selectedBorderColor else Color.Transparent,
                                 shape = CircleShape
                             )
-                            .clickable { selectedColor = color }
+                            .clickable { selectedPriority = priority }
                     )
                 }
             }
