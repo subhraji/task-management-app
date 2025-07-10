@@ -4,6 +4,7 @@ import android.content.ClipDescription
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -106,20 +107,27 @@ fun TaskBoardBox(
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    onBackClick?.let {
-                        IconButton(onClick = it) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                                tint = lightText,
-                            )
-                        }
+
+                    onBackClick?.let { it ->
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = lightText,
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .clickable {
+                                    onBackClick()
+                                }
+                        )
                     }
+
                     Text(
                         text = boxStatus.name,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = lightText
+                        color = lightText,
+                        modifier = Modifier
+                            .fillMaxWidth(),
                     )
                 }
             }

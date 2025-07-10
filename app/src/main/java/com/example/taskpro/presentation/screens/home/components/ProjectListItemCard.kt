@@ -56,7 +56,7 @@ import com.example.taskpro.utils.isDark
 @Composable
 fun ProjectListItemCard(
     project: ProjectModel,
-    onProjectClick: (String) -> Unit,
+    onProjectClick: (ProjectModel) -> Unit,
 ){
     val priorityColor = when (project.priority) {
         1 -> red
@@ -75,7 +75,7 @@ fun ProjectListItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onProjectClick(project.id) },
+            .clickable { onProjectClick(project) },
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(16.dp),
     ) {

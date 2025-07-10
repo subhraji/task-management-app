@@ -8,8 +8,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -17,14 +19,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taskpro.presentation.components.BottomNavigationBar
 import com.example.taskpro.presentation.components.CustomBottomBar
 import com.example.taskpro.presentation.screens.create_project.CreateProjectScreen
+import com.example.taskpro.presentation.screens.create_task.CreateTaskScreen
 import com.example.taskpro.presentation.screens.home.HomeScreen
 import com.example.taskpro.presentation.screens.settings.SettingsScreen
 import com.example.taskpro.presentation.screens.splash.SplashScreen
 import com.example.taskpro.presentation.screens.task_board.TaskBoardScreen
+import com.example.taskpro.presentation.shared.SharedProjectViewModel
 import com.example.taskpro.ui.theme.TaskProTheme
 
 @Composable
 fun MyApp() {
+    val sharedProjectViewModel: SharedProjectViewModel = viewModel()
+
     TaskProTheme {
         val navController = rememberNavController()
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -57,8 +63,9 @@ fun MyApp() {
                     }
                 }
                 composable("home") {
-                    HomeScreen(onProjectClick = { projectId ->
-                        navController.navigate("projectDetail/$projectId")
+                    HomeScreen(onProjectClick = { project ->
+                        sharedProjectViewModel.selectedProject = project
+                        navController.navigate("projectDetail")
                     })
                 }
                 composable("addProject") {
@@ -71,14 +78,26 @@ fun MyApp() {
                 composable("settings") {
                     SettingsScreen()
                 }
-                composable("projectDetail/{projectId}") { backStackEntry ->
-                    val projectId = backStackEntry.arguments?.getString("projectId") ?: ""
+                composable("projectDetail") { backStackEntry ->
+                    val project = sharedProjectViewModel.selectedProject
                     TaskBoardScreen (
                         modifier = Modifier,
-                        projectId = projectId,
+                        projectId = project?.id.orEmpty(),
                         onBackClick = { navController.popBackStack() },
-                        onFabClick = {}
+                        onFabClick = { navController.navigate("createTask") }
                     )
+                }
+                composable("createTask"){
+                    sharedProjectViewModel.selectedProject?.let { project ->
+                        CreateTaskScreen(
+                            project = project,
+                            onBack = { navController.popBackStack() }
+                        )
+                    } ?: run {
+                        LaunchedEffect(Unit) {
+                            navController.popBackStack()
+                        }
+                    }
                 }
             }
         }

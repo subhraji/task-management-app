@@ -6,10 +6,13 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -30,6 +33,8 @@ import com.example.taskpro.domain.model.TaskStatus
 import com.example.taskpro.presentation.screens.task_board.components.TaskBoardBox
 import com.example.taskpro.ui.theme.black
 import com.example.taskpro.ui.theme.completedGreen
+import com.example.taskpro.ui.theme.darkGrayBackground
+import com.example.taskpro.ui.theme.lightestGrayText
 import com.example.taskpro.ui.theme.ongoingAmber
 import com.example.taskpro.ui.theme.pendingRed
 import com.example.taskpro.ui.theme.yellowPrimary
@@ -76,7 +81,7 @@ fun TaskBoardScreen(
             TaskBoardBox(
                 taskLists = taskLists,
                 boxStatus = TaskStatus.Pending,
-                backgroundColor = pendingRed,
+                backgroundColor = lightestGrayText,
                 onDropTask = { taskId ->
                     val task = taskLists.find { it.id == taskId }
                     task?.status = TaskStatus.Pending
@@ -85,33 +90,48 @@ fun TaskBoardScreen(
                 onBackClick = onBackClick
             )
 
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+                    .background(color = darkGrayBackground)
+            ) { }
+
             // ONGOING
             TaskBoardBox(
                 taskLists = taskLists,
                 boxStatus = TaskStatus.InProgress,
-                backgroundColor = ongoingAmber,
+                backgroundColor = lightestGrayText,
                 onDropTask = { taskId ->
                     val task = taskLists.find { it.id == taskId }
                     task?.status = TaskStatus.InProgress
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                //onBackClick = onBackClick
             )
 
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp)
+                    .background(color = darkGrayBackground)
+            ) { }
             // COMPLETED
             TaskBoardBox(
                 taskLists = taskLists,
                 boxStatus = TaskStatus.Completed,
-                backgroundColor = completedGreen,
+                backgroundColor = lightestGrayText,
                 onDropTask = { taskId ->
                     val task = taskLists.find { it.id == taskId }
                     task?.status = TaskStatus.Completed
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                //onBackClick = onBackClick
             )
         }
 
         FloatingActionButton(
-            onClick = { },
+            onClick = { onFabClick() },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),

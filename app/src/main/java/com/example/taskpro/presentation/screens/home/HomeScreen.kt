@@ -14,7 +14,7 @@ import com.example.taskpro.presentation.screens.home.components.ProjectSwipeItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onProjectClick: (String) -> Unit){
+fun HomeScreen(onProjectClick: (ProjectModel) -> Unit){
 
     val projectList = remember {
         mutableStateListOf(

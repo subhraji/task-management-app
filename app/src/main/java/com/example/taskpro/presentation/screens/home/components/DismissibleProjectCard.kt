@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ProjectSwipeItem(
     project: ProjectModel,
-    onProjectClick: (String) -> Unit,
+    onProjectClick: (ProjectModel) -> Unit,
     onDelete: (ProjectModel) -> Unit
 ) {
     val swipeOffsetX = remember { Animatable(0f) }
