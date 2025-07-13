@@ -1,5 +1,7 @@
 package com.example.taskpro.presentation.screens.create_task
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +56,7 @@ import com.example.taskpro.ui.theme.white
 import com.example.taskpro.ui.theme.yellowPrimary
 import com.example.taskpro.ui.theme.yellowTertiary
 import com.example.taskpro.utils.isDark
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +64,9 @@ fun CreateTaskScreen(
     project: ProjectModel,
     onBack: () -> Unit = {}
 ){
+
+    val context = LocalContext.current
+
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -72,6 +80,24 @@ fun CreateTaskScreen(
     var selectedPriority by remember { mutableStateOf(priorityOptions.first()) }
     val selectedBorderColor = if (isDark()) white else darkGrayBackground
 
+    var dueDate by remember { mutableStateOf("") }
+    var showDatePicker = remember { mutableStateOf(false) }
+
+    if(showDatePicker.value){
+        val calendar = Calendar.getInstance()
+        val datePicker = DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, day: Int ->
+                dueDate = "$day/${month + 1}/$year"
+                showDatePicker.value = false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePicker.datePicker.minDate = System.currentTimeMillis()
+        datePicker.show()
+    }
 
     Scaffold(
         topBar = {
@@ -120,7 +146,6 @@ fun CreateTaskScreen(
             }
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
-
             Text("Task Name")
             OutlinedTextField(
                 value = name,
@@ -130,7 +155,6 @@ fun CreateTaskScreen(
             )
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
-
             Text("Task description")
             OutlinedTextField(
                 value = description,
@@ -142,7 +166,22 @@ fun CreateTaskScreen(
             )
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
+            Text("Due date")
+            OutlinedTextField(
+                value = dueDate,
+                onValueChange = { },
+                label = { Text("Select due date") },
+                readOnly = true,
+                enabled = false,
+                trailingIcon = {
+                    Icon(Icons.Default.DateRange, contentDescription = null)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showDatePicker.value = true }
+            )
 
+            Spacer(modifier = Modifier.padding(top = 12.dp))
             Text("Choose Task Priority")
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),

@@ -67,10 +67,34 @@ fun TaskBoardScreen(
 
     val taskLists = remember {
         mutableStateListOf(
-            TaskDataModel("1442837", "Buy groceries", TaskStatus.Pending),
-            TaskDataModel("23223r32", "Walk the dog", TaskStatus.Pending),
-            TaskDataModel("32424244", "Read a book", TaskStatus.InProgress),
-            TaskDataModel("32424245", "Drink water", TaskStatus.Completed)
+            TaskDataModel(
+                id = "1442837",
+                title = "Buy groceries",
+                description = "test description xyz and bla bla bla, nothing else for this task",
+                dueDate = 22,
+                priority = 2,
+                status = TaskStatus.Pending),
+            TaskDataModel(
+                id = "23223r32",
+                title = "Walk the dog",
+                description = "test description",
+                dueDate = 22,
+                priority = 3,
+                status = TaskStatus.Pending),
+            TaskDataModel(
+                id = "32424244",
+                title = "Read a book",
+                description = "test description",
+                dueDate = 22,
+                priority = 1,
+                status = TaskStatus.InProgress),
+            TaskDataModel(
+                id = "32424245",
+                title = "Drink water",
+                description = "test description",
+                dueDate = 22,
+                priority = 4,
+                status = TaskStatus.Completed)
         )
     }
 
