@@ -66,11 +66,5 @@ dependencies {
     //Constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
-    //Swipe To Dismiss
-    //implementation "com.google.accompanist:accompanist-swipetodismiss:0.32.0"
-
-    //Matrial 3
-    //implementation "androidx.compose.material:material:1.6.1"
-
 
 }
