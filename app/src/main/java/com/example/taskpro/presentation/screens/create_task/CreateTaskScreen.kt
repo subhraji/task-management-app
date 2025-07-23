@@ -94,8 +94,15 @@ fun CreateTaskScreen(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePicker.datePicker.minDate = System.currentTimeMillis()
+        ).apply {
+            datePicker.minDate = System.currentTimeMillis()
+            setOnCancelListener {
+                showDatePicker.value = false
+            }
+            setOnDismissListener {
+                showDatePicker.value = false
+            }
+        }
         datePicker.show()
     }
 

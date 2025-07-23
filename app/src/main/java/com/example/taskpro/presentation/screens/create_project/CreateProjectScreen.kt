@@ -1,7 +1,9 @@
 package com.example.taskpro.presentation.screens.create_project
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -50,7 +54,9 @@ import com.example.taskpro.ui.theme.orange
 import com.example.taskpro.ui.theme.pink
 import com.example.taskpro.ui.theme.red
 import com.example.taskpro.ui.theme.white
+import com.example.taskpro.ui.theme.yellowPrimary
 import com.example.taskpro.utils.isDark
+import kotlinx.coroutines.delay
 import java.util.Calendar
 
 
@@ -59,7 +65,6 @@ import java.util.Calendar
 fun CreateProjectScreen(
     onBack: () -> Unit = {},
 ) {
-
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
@@ -77,7 +82,6 @@ fun CreateProjectScreen(
     val selectedBorderColor = if (isDark()) white else darkGrayBackground
 
     var showDatePicker = remember { mutableStateOf(false) }
-
     if(showDatePicker.value){
         val calendar = Calendar.getInstance()
         val datePicker = DatePickerDialog(
@@ -89,9 +93,24 @@ fun CreateProjectScreen(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePicker.datePicker.minDate = System.currentTimeMillis()
+        ).apply {
+            datePicker.minDate = System.currentTimeMillis()
+            setOnCancelListener {
+                showDatePicker.value = false
+            }
+            setOnDismissListener {
+                showDatePicker.value = false
+            }
+        }
         datePicker.show()
+    }
+
+    var isLoading: Boolean by remember { mutableStateOf(false) }
+    if (isLoading){
+        LaunchedEffect(Unit) {
+            delay(5000)
+            isLoading = false
+        }
     }
 
     Scaffold(
@@ -177,17 +196,30 @@ fun CreateProjectScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = {},
+                onClick = {
+                    isLoading = true
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                enabled = !isLoading
             ){
-                Text(
-                    text = "Create Project",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                AnimatedContent(targetState = isLoading, label = "Button loader transition") { loading ->
+                    if (loading){
+                        CircularProgressIndicator(
+                            color = yellowPrimary,
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp
+                        )
+                    }else{
+                        Text(
+                            text = "Create Project",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }

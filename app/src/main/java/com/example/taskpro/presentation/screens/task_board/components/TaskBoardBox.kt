@@ -83,11 +83,6 @@ fun TaskBoardBox(
 
                             if (!taskId.isNullOrBlank()) {
                                 onDropTask(taskId)
-
-                                val task = taskLists.find { it.id == taskId }
-                                //task?.status = boxStatus
-
-                                Toast.makeText(context, "Dropped task ID: $taskId current status: ${task?.status}", Toast.LENGTH_SHORT).show()
                             }
                             return true
                         }
