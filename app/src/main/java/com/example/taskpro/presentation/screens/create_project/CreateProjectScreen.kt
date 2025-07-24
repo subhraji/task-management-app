@@ -27,6 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -71,6 +72,12 @@ fun CreateProjectScreen(
     var description by remember { mutableStateOf("") }
     var dueDate by remember { mutableStateOf("") }
 
+    var nameError by remember { mutableStateOf(false) }
+    var descriptionError by remember { mutableStateOf(false) }
+    var dateError by remember { mutableStateOf(false) }
+
+    var showError by remember { mutableStateOf(false) }
+
     val priorityOptions = listOf(
         ProjectPriorityModel(green, 1),
         ProjectPriorityModel(amber, 2),
@@ -104,12 +111,28 @@ fun CreateProjectScreen(
         }
         datePicker.show()
     }
+    if (dueDate.isNotBlank()) {
+        dateError = false
+    }
 
     var isLoading: Boolean by remember { mutableStateOf(false) }
     if (isLoading){
-        LaunchedEffect(Unit) {
-            delay(5000)
-            isLoading = false
+        isLoading = false
+    }
+
+    fun validateForm(): Boolean{
+        nameError = name.isBlank()
+        descriptionError = description.isBlank()
+        dateError = dueDate.isBlank()
+        return !( nameError || descriptionError || dateError )
+    }
+
+    fun submitProject(){
+        if(validateForm()){
+            //isLoading = true
+            onBack()
+        }else{
+            showError = true
         }
     }
 
@@ -133,29 +156,44 @@ fun CreateProjectScreen(
             Text("Project Name")
             OutlinedTextField(
                 value = name,
-                onValueChange = { newName -> name = newName },
+                onValueChange = {
+                    newName -> name = newName
+                    if (newName.isNotBlank()) nameError = false
+                },
+                isError = nameError && showError,
                 label = { Text("Type project name here ...") },
                 modifier = Modifier.fillMaxWidth()
             )
+            if(showError && nameError) {
+                Text(text = "Name can not be empty", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+            }
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
 
             Text("Project Description")
             OutlinedTextField(
                 value = description,
-                onValueChange = { newDescription ->  description = newDescription },
+                onValueChange = {
+                    description = it
+                    if (it.isNotBlank()) descriptionError = false
+                },
+                isError = showError && descriptionError,
                 label = { Text("Type project description here ...") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 120.dp)
+                    .heightIn(min = 120.dp),
             )
+            if (showError && descriptionError) {
+                Text(text = "Description can not be empty", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+            }
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
 
             Text("Due date")
             OutlinedTextField(
                 value = dueDate,
-                onValueChange = { },
+                onValueChange = {},
+                isError = showError && dateError,
                 label = { Text("Select due date") },
                 readOnly = true,
                 enabled = false,
@@ -166,6 +204,9 @@ fun CreateProjectScreen(
                     .fillMaxWidth()
                     .clickable { showDatePicker.value = true }
             )
+            if (showError && dateError) {
+                Text(text = "Due date can not be empty", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+            }
 
             Spacer(modifier = Modifier.padding(top = 12.dp))
 
@@ -197,7 +238,7 @@ fun CreateProjectScreen(
 
             Button(
                 onClick = {
-                    isLoading = true
+                    submitProject()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
