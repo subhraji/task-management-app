@@ -12,7 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taskpro.presentation.navigation.MyApp
 import com.example.taskpro.presentation.screens.home.HomeScreen
 import com.example.taskpro.presentation.screens.splash.SplashScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

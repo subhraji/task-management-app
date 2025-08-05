@@ -1,4 +1,4 @@
-package com.example.taskpro.domain.model
+package com.example.taskpro.domain.model.task
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

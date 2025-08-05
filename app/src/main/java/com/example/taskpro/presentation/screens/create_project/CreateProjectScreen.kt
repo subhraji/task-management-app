@@ -1,6 +1,5 @@
 package com.example.taskpro.presentation.screens.create_project
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.animation.AnimatedContent
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -34,30 +34,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskpro.domain.model.local.ProjectPriorityModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.taskpro.domain.model.project.ProjectModel
+import com.example.taskpro.domain.model.project.ProjectPriorityModel
+import com.example.taskpro.presentation.screens.create_project.state.CreateProjectUiState
+import com.example.taskpro.presentation.screens.create_project.viewmodel.CreateProjectViewModel
 import com.example.taskpro.ui.theme.amber
 import com.example.taskpro.ui.theme.darkGrayBackground
 import com.example.taskpro.ui.theme.green
-import com.example.taskpro.ui.theme.lightGrayBackground
-import com.example.taskpro.ui.theme.lightestGrayBackground
 import com.example.taskpro.ui.theme.orange
 import com.example.taskpro.ui.theme.pink
 import com.example.taskpro.ui.theme.red
 import com.example.taskpro.ui.theme.white
 import com.example.taskpro.ui.theme.yellowPrimary
 import com.example.taskpro.utils.isDark
-import kotlinx.coroutines.delay
 import java.util.Calendar
 
 
@@ -67,6 +70,15 @@ fun CreateProjectScreen(
     onBack: () -> Unit = {},
 ) {
     val context = LocalContext.current
+
+    val viewModel: CreateProjectViewModel = hiltViewModel()
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    var isLoading: Boolean by remember { mutableStateOf(false) }
+    if (isLoading){
+        isLoading = false
+    }
 
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -115,11 +127,6 @@ fun CreateProjectScreen(
         dateError = false
     }
 
-    var isLoading: Boolean by remember { mutableStateOf(false) }
-    if (isLoading){
-        isLoading = false
-    }
-
     fun validateForm(): Boolean{
         nameError = name.isBlank()
         descriptionError = description.isBlank()
@@ -129,11 +136,36 @@ fun CreateProjectScreen(
 
     fun submitProject(){
         if(validateForm()){
-            //isLoading = true
-            onBack()
+            val projectModel = ProjectModel(
+                name = name,
+                taskCount = 0,
+                dueDate = dueDate,
+                priority = priorityOptions.indexOf(selectedPriority) + 1,
+            )
+            viewModel.createProject(project = projectModel)
         }else{
             showError = true
         }
+    }
+
+    when(uiState){
+        is CreateProjectUiState.Loading -> {
+            isLoading = true
+        }
+        is CreateProjectUiState.Success -> {
+            isLoading = false
+            LaunchedEffect(Unit) {
+                onBack()
+            }
+        }
+        is CreateProjectUiState.Error -> {
+            isLoading = false
+            val message = (uiState as CreateProjectUiState.Error).message
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: $message", color = Color.Red)
+            }
+        }
+        CreateProjectUiState.Idle -> {}
     }
 
     Scaffold(

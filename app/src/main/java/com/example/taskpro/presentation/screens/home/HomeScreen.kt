@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.taskpro.domain.model.ProjectModel
+import com.example.taskpro.domain.model.project.ProjectModel
 import com.example.taskpro.presentation.screens.home.components.ProjectSwipeItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,12 +17,12 @@ import com.example.taskpro.presentation.screens.home.components.ProjectSwipeItem
 fun HomeScreen(onProjectClick: (ProjectModel) -> Unit){
 
     val projectList = remember {
-        mutableStateListOf(
-            ProjectModel(id = "1442837", name = "Water log Project", taskCount = 3, dueDate = null, priority = 2, completionPercentage = 40),
-            ProjectModel(id = "1228393", name = "Example Project", taskCount = 8, dueDate = null, priority = 4, completionPercentage = 10),
-            ProjectModel(id = "7878637", name = "Test Project", taskCount = 2, dueDate = null, priority = 1, completionPercentage = 70),
-        )
-    }
+            mutableStateListOf(
+            ProjectModel(id = 123, name = "Water log Project", taskCount = 3, dueDate = null, priority = 2, completionPercentage = 40),
+            ProjectModel(id = 124, name = "Example Project", taskCount = 8, dueDate = null, priority = 4, completionPercentage = 10),
+            ProjectModel(id = 125, name = "Test Project", taskCount = 2, dueDate = null, priority = 1, completionPercentage = 70)
+            )
+        }
 
     Scaffold(
         topBar = {

@@ -1,4 +1,4 @@
-package com.example.taskpro.domain.model.local
+package com.example.taskpro.domain.model.project
 
 import androidx.compose.ui.graphics.Color
 

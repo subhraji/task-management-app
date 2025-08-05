@@ -1,5 +1,6 @@
 package com.example.taskpro.presentation.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -10,12 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.taskpro.domain.model.project.ProjectModel
 import com.example.taskpro.presentation.components.BottomNavigationBar
 import com.example.taskpro.presentation.components.CustomBottomBar
 import com.example.taskpro.presentation.screens.create_project.CreateProjectScreen
@@ -68,7 +72,9 @@ fun MyApp() {
                         navController.navigate("projectDetail")
                     })
                 }
-                composable("addProject") {
+                composable(
+                    "addProject"
+                ) {
                     CreateProjectScreen(
                         onBack = {
                             navController.popBackStack()
@@ -82,7 +88,7 @@ fun MyApp() {
                     val project = sharedProjectViewModel.selectedProject
                     TaskBoardScreen (
                         modifier = Modifier,
-                        projectId = project?.id.orEmpty(),
+                        projectId = project?.id ?: -1,
                         onBackClick = { navController.popBackStack() },
                         onFabClick = { navController.navigate("createTask") }
                     )

@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,9 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskpro.domain.model.ProjectModel
-import com.example.taskpro.domain.model.local.ProjectPriorityModel
-import com.example.taskpro.presentation.screens.create_project.CreateProjectScreen
+import com.example.taskpro.domain.model.project.ProjectModel
+import com.example.taskpro.domain.model.project.ProjectPriorityModel
 import com.example.taskpro.ui.theme.amber
 import com.example.taskpro.ui.theme.darkGrayBackground
 import com.example.taskpro.ui.theme.darkText
@@ -54,7 +52,6 @@ import com.example.taskpro.ui.theme.orange
 import com.example.taskpro.ui.theme.pink
 import com.example.taskpro.ui.theme.red
 import com.example.taskpro.ui.theme.white
-import com.example.taskpro.ui.theme.yellowPrimary
 import com.example.taskpro.ui.theme.yellowTertiary
 import com.example.taskpro.utils.isDark
 import java.util.Calendar
@@ -125,7 +122,6 @@ fun CreateTaskScreen(
 
     fun submitTask(){
         if(validateForm()){
-            //isLoading = true
             onBack()
         }else{
             showError = true
@@ -280,5 +276,5 @@ fun CreateTaskScreen(
 @Composable
 @Preview(showBackground = true)
 fun CreateTaskScreenPreview(){
-    CreateTaskScreen(project = ProjectModel("g","j",2, 12, 1))
+    CreateTaskScreen(project = ProjectModel(1,"j",2, "02/03/2025", 1))
 }

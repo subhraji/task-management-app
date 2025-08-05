@@ -2,7 +2,6 @@ package com.example.taskpro.presentation.screens.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,16 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.example.taskpro.domain.model.ProjectModel
+import com.example.taskpro.domain.model.project.ProjectModel
 import com.example.taskpro.ui.theme.amber
-import com.example.taskpro.ui.theme.darkGrayBackground
 import com.example.taskpro.ui.theme.darkText
 import com.example.taskpro.ui.theme.darkestGrayBackground
 import com.example.taskpro.ui.theme.green
-import com.example.taskpro.ui.theme.lightText
-import com.example.taskpro.ui.theme.lightestGrayBackground
 import com.example.taskpro.ui.theme.lightestGrayText
 import com.example.taskpro.ui.theme.orange
 import com.example.taskpro.ui.theme.pink
@@ -185,7 +179,7 @@ fun ProjectListItemCard(
 @Composable
 fun ProjectListItemCard(){
     val sampleProject = ProjectModel(
-        id = "1",
+        id = 1,
         name = "Sample Project",
         taskCount = 5,
         dueDate = null,
