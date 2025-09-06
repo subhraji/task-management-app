@@ -122,6 +122,7 @@ fun CreateTaskScreen(
 
     fun submitTask(){
         if(validateForm()){
+            //isLoading = true
             onBack()
         }else{
             showError = true
