@@ -22,4 +22,7 @@ interface ProjectDao {
 
     @Delete
     suspend fun deleteProject(project: ProjectEntity)
+
+    @Query("SELECT * FROM projects WHERE name LIKE '%' || :query || '%'")
+    fun searchProjects(query: String): Flow<List<ProjectEntity>>
 }

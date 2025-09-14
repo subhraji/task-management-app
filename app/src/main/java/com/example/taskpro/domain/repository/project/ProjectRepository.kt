@@ -9,4 +9,5 @@ interface ProjectRepository {
     suspend fun addProject(project: ProjectModel): Result<Unit>
     suspend fun updateProject(project: ProjectModel): Result<Unit>
     suspend fun deleteProject(project: ProjectModel): Result<Unit>
+    fun searchProjects(query: String): Flow<Resource<List<ProjectModel>>>
 }
