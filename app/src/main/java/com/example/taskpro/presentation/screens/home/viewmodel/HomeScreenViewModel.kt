@@ -7,8 +7,14 @@ import com.example.taskpro.domain.use_case.project.SearchProjectUseCase
 import com.example.taskpro.presentation.screens.home.state.GetProjectUiState
 import com.example.taskpro.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,15 +32,21 @@ class HomeScreenViewModel @Inject constructor(
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
+    private var fetchJob: Job? = null
+
     init {
         getProjects()
+        observeSearchQuery()
     }
 
     fun getProjects(){
-        viewModelScope.launch {
+
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch {
             _uiState.value = GetProjectUiState.Loading
             useCase()
-                .collect { res ->
+                .collectLatest { res ->
                     _uiState.value = when (res) {
                         is Resource.Error -> GetProjectUiState.ERROR(res.message)
                         is Resource.Loading -> GetProjectUiState.Loading
@@ -49,11 +61,6 @@ class HomeScreenViewModel @Inject constructor(
 
     fun updateSearchQuery(query: String){
         _searchQuery.value = query
-        if (query.isBlank()){
-            getProjects()
-        } else {
-            searchProjects(query = query)
-        }
     }
 
     fun toggleSearch(){
@@ -65,9 +72,11 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun searchProjects(query: String){
-        viewModelScope.launch {
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch {
             _uiState.value = GetProjectUiState.Loading
-            searchProjectUseCase(query = query).collect{ result ->
+            searchProjectUseCase(query = query).collectLatest{ result ->
                 _uiState.value = when(result){
                     is Resource.Error -> GetProjectUiState.ERROR(result.message)
                     is Resource.Loading -> GetProjectUiState.Loading
@@ -77,6 +86,23 @@ class HomeScreenViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            _searchQuery
+                .drop(1)
+                .debounce(300)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    if (query.isBlank()) {
+                        getProjects()
+                    } else {
+                        searchProjects(query)
+                    }
+                }
         }
     }
 }
