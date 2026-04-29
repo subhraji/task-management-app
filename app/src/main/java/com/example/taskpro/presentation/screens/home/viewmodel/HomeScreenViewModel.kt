@@ -23,6 +23,9 @@ class HomeScreenViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
     init {
         getProjects()
     }
@@ -51,6 +54,14 @@ class HomeScreenViewModel @Inject constructor(
         } else {
             searchProjects(query = query)
         }
+    }
+
+    fun toggleSearch(){
+        _isSearching.value = !_isSearching.value
+    }
+
+    fun restoreSearchState(){
+        _isSearching.value = _searchQuery.value.isNotEmpty()
     }
 
     private fun searchProjects(query: String){
