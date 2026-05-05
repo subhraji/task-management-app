@@ -11,6 +11,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -46,6 +47,9 @@ class HomeScreenViewModel @Inject constructor(
         fetchJob = viewModelScope.launch {
             _uiState.value = GetProjectUiState.Loading
             useCase()
+                .catch { e ->
+                    _uiState.value = GetProjectUiState.ERROR(e.message ?: "Unknown error")
+                }
                 .collectLatest { res ->
                     _uiState.value = when (res) {
                         is Resource.Error -> GetProjectUiState.ERROR(res.message)
@@ -76,7 +80,11 @@ class HomeScreenViewModel @Inject constructor(
 
         fetchJob = viewModelScope.launch {
             _uiState.value = GetProjectUiState.Loading
-            searchProjectUseCase(query = query).collectLatest{ result ->
+            searchProjectUseCase(query = query)
+                .catch { e ->
+                    _uiState.value = GetProjectUiState.ERROR(e.message ?: "Unknown error")
+                }
+                .collectLatest{ result ->
                 _uiState.value = when(result){
                     is Resource.Error -> GetProjectUiState.ERROR(result.message)
                     is Resource.Loading -> GetProjectUiState.Loading

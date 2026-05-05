@@ -14,6 +14,6 @@ sealed class GetProjectUiState {
     ): GetProjectUiState()
 
     data class ERROR(
-        val message: String
+        val message: String?
     ): GetProjectUiState()
 }
