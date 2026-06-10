@@ -67,10 +67,15 @@ fun MyApp() {
                     }
                 }
                 composable("home") {
-                    HomeScreen(onProjectClick = { project ->
-                        sharedProjectViewModel.selectedProject = project
-                        navController.navigate("projectDetail")
-                    })
+                    HomeScreen(
+                        onProjectClick = { project ->
+                            sharedProjectViewModel.selectedProject = project
+                            navController.navigate("projectDetail")
+                        },
+                        onAddProjectClick = {
+                            navController.navigate("addProject")
+                        }
+                    )
                 }
                 composable(
                     "addProject"

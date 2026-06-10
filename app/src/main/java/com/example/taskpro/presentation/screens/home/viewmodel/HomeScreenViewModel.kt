@@ -2,6 +2,8 @@ package com.example.taskpro.presentation.screens.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.taskpro.domain.model.project.ProjectModel
+import com.example.taskpro.domain.use_case.project.DeleteProjectUseCase
 import com.example.taskpro.domain.use_case.project.GetProjectUseCase
 import com.example.taskpro.domain.use_case.project.SearchProjectUseCase
 import com.example.taskpro.presentation.screens.home.state.GetProjectUiState
@@ -17,12 +19,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import java.security.PrivateKey
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val useCase: GetProjectUseCase,
-    private val searchProjectUseCase: SearchProjectUseCase
+    private val searchProjectUseCase: SearchProjectUseCase,
+    private val deleteProjectUseCase: DeleteProjectUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<GetProjectUiState>(GetProjectUiState.Idl)
     val uiState = _uiState.asStateFlow()
@@ -111,6 +115,17 @@ class HomeScreenViewModel @Inject constructor(
                         searchProjects(query)
                     }
                 }
+        }
+    }
+
+    fun deleteProject(projectModel: ProjectModel){
+        viewModelScope.launch {
+            val res = deleteProjectUseCase(project = projectModel)
+            if ( res.isSuccess ) {
+                getProjects()
+            } else if ( res.isFailure ){
+                _uiState.value = GetProjectUiState.ERROR("Failed to delete project.")
+            }
         }
     }
 }
