@@ -2,31 +2,59 @@ package com.example.taskpro.presentation.screens.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.taskpro.domain.model.project.ProjectModel
+import com.example.taskpro.domain.use_case.project.DeleteProjectUseCase
 import com.example.taskpro.domain.use_case.project.GetProjectUseCase
+import com.example.taskpro.domain.use_case.project.SearchProjectUseCase
 import com.example.taskpro.presentation.screens.home.state.GetProjectUiState
 import com.example.taskpro.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import java.security.PrivateKey
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val useCase: GetProjectUseCase
+    private val useCase: GetProjectUseCase,
+    private val searchProjectUseCase: SearchProjectUseCase,
+    private val deleteProjectUseCase: DeleteProjectUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<GetProjectUiState>(GetProjectUiState.Idl)
     val uiState = _uiState.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    private var fetchJob: Job? = null
+
     init {
         getProjects()
+        observeSearchQuery()
     }
 
     fun getProjects(){
-        viewModelScope.launch {
+
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch {
             _uiState.value = GetProjectUiState.Loading
             useCase()
-                .collect { res ->
+                .catch { e ->
+                    _uiState.value = GetProjectUiState.ERROR(e.message ?: "Unknown error")
+                }
+                .collectLatest { res ->
                     _uiState.value = when (res) {
                         is Resource.Error -> GetProjectUiState.ERROR(res.message)
                         is Resource.Loading -> GetProjectUiState.Loading
@@ -36,6 +64,68 @@ class HomeScreenViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun updateSearchQuery(query: String){
+        _searchQuery.value = query
+    }
+
+    fun toggleSearch(){
+        _isSearching.value = !_isSearching.value
+    }
+
+    fun restoreSearchState(){
+        _isSearching.value = _searchQuery.value.isNotEmpty()
+    }
+
+    private fun searchProjects(query: String){
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch {
+            _uiState.value = GetProjectUiState.Loading
+            searchProjectUseCase(query = query)
+                .catch { e ->
+                    _uiState.value = GetProjectUiState.ERROR(e.message ?: "Unknown error")
+                }
+                .collectLatest{ result ->
+                _uiState.value = when(result){
+                    is Resource.Error -> GetProjectUiState.ERROR(result.message)
+                    is Resource.Loading -> GetProjectUiState.Loading
+                    is Resource.Success -> GetProjectUiState.SUCCESS(
+                        result.data,
+                        "Projects fetched successfully"
+                    )
+                }
+            }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            _searchQuery
+                .drop(1)
+                .debounce(300)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    if (query.isBlank()) {
+                        getProjects()
+                    } else {
+                        searchProjects(query)
+                    }
+                }
+        }
+    }
+
+    fun deleteProject(projectModel: ProjectModel){
+        viewModelScope.launch {
+            val res = deleteProjectUseCase(project = projectModel)
+            if ( res.isSuccess ) {
+                getProjects()
+            } else if ( res.isFailure ){
+                _uiState.value = GetProjectUiState.ERROR("Failed to delete project.")
+            }
         }
     }
 }

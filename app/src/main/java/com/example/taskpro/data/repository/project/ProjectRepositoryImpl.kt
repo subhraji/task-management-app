@@ -63,5 +63,18 @@ class ProjectRepositoryImpl @Inject constructor(
         }
     }
 
-
+    override fun searchProjects(query: String): Flow<Resource<List<ProjectModel>>> = flow{
+         emit(Resource.Loading())
+         try {
+             projectDao.searchProjects(query = query).map { entities ->
+                 entities.map { projectEntities -> projectEntities.convertToProjectModel() }
+             }.catch { e ->
+                 emit(Resource.Error(e.localizedMessage ?: "Unknown error occurred"))
+             }.collect{ projects ->
+                 emit(Resource.Success(projects))
+             }
+         } catch (e: Exception){
+             e.printStackTrace()
+         }
+    }
 }
